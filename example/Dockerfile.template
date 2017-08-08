@@ -1,0 +1,10 @@
+FROM {{ distro }}:{{ distro_version }}
+
+RUN {{ installer }} install httpd && \
+    {{ installer }} clean all
+
+COPY {{ configfile }} /etc/httpd/conf.d
+
+EXPOSE 80
+
+CMD exec /usr/sbin/apachectl -DFOREGROUND

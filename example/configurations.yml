@@ -1,0 +1,14 @@
+version: '1'
+
+defaults:
+  configfile: config-rhel_centos
+
+configurations:
+  fedora-26:
+    configfile: config-fedora
+
+  some-special-rhel-7-name:
+    distro: rhel
+    distro_version: 7
+
+  centos-7: {}
