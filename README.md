@@ -147,17 +147,22 @@ via the `-v` switch.
 ## Usage
 
 * `dfe -h` - Print help
-* `dfe -c <configurations> -l` - List names of configurations entries
-* `dfe -c <configurations> -e <configuration_item>` - Output given item as
+* `dfe [-c <configurations>] list-configs` - List names of configurations entries
+* `dfe -c <configurations> config-as-env <configuration_item>` - Output given item as
   env vars to stdout
-* `dfe -c <configurations> -r <configuration_item> -i <dir> -o <dir>`
+* `dfe [-c <configurations>] [-i <dir>] [-o <dir>] render <configuration_item>`
   * Renders `Dockerfile`, from directory given by `-i` to directory
-    given by `-o` (both default to '.')
-  * Name of the resulting file is `Dockerfile.<name>` (for `configurations`
+    given by `-o`
+  * Name of the resulting files is `<original_filename>.<name>` (for `configurations`
     entry with given `name`)
-* `dfe -c <configurations> -v <configuration_item> <configuration_value>` -
+* `dfe -c <configurations> expanded-value <configuration_item> <configuration_value>` -
    Output given value of given expanded configuration item to stdout (e.g.
    `tag` to print the tag; to print whole item, use `.`).
+
+Default values:
+* `-c`: `./configurations.yml`
+* `-i`: `.`
+* `-o`: `.`
 
 
 # Example

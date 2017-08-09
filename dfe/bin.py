@@ -6,30 +6,34 @@ from dfe.renderer import Renderer
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--configurations', default='configurations.yml')
-    meg = parser.add_mutually_exclusive_group(required=True)
-    meg.add_argument('-l', '--list-configurations', action='store_true')
-    meg.add_argument('-e', '--config-as-env-vars')
-    meg.add_argument('-v', '--print-expanded-value', nargs=2)
-    meg.add_argument('-r', '--render-with-config')
     parser.add_argument('-i', '--input-dir', default='.')
     parser.add_argument('-o', '--output-dir', default='.')
+    subp = parser.add_subparsers(dest='subparser')
+    subp.add_parser('list-configs')
+    env = subp.add_parser('config-as-env')
+    env.add_argument('config')
+    val = subp.add_parser('expanded-value')
+    val.add_argument('config')
+    val.add_argument('value')
+    rend = subp.add_parser('render')
+    rend.add_argument('config')
     args = parser.parse_args()
     configs = Configurations.from_file(args.configurations, args.output_dir)
-    if args.list_configurations:
+    if args.subparser == 'list-configs':
         for c in sorted(configs.configs_names):
             print(c)
-    elif args.config_as_env_vars:
-        print(configs.get_expanded_config(args.config_as_env_vars).as_env_vars())
-    elif args.print_expanded_value:
+    elif args.subparser == 'config-as-env':
+        print(configs.get_expanded_config(args.config).as_env_vars())
+    elif args.subparser == 'expanded-value':
         # TODO: nice formatting
         print(
             configs.\
-            get_expanded_config(args.print_expanded_value[0]).\
-            get_value(args.print_expanded_value[1])
+            get_expanded_config(args.config).\
+            get_value(args.value)
         )
-    elif args.render_with_config:
+    elif args.subparser == 'render':
         renderer = Renderer(
-            configs.get_expanded_config(args.render_with_config),
+            configs.get_expanded_config(args.config),
             input_dir = args.input_dir,
         )
         renderer.render()
