@@ -1,14 +1,26 @@
 version: '1'
 
 defaults:
-  configfile: config-rhel_centos
+  dockerfile: Dockerfile
+  vars:
+    configfile: config-rhel_centos
 
 configurations:
-  fedora-26:
-    configfile: config-fedora
+  - name: fedora-26
+    vars:
+      base_img_reg: some.registry.fedoraproject.org
+      base_img_name: fedora
+      base_img_tag: 26
+      configfile: config-fedora
 
-  some-special-rhel-7-name:
-    distro: rhel
-    distro_version: 7
+  - name: some-special-rhel-7-name
+    vars:
+      base_img_reg: some.registry.redhat.com
+      base_img_name: rhel
+      base_img_tag: 7
 
-  centos-7: {}
+  - name: centos-7
+    vars:
+      base_img_reg: some.registry.centos.org
+      base_img_name: centos
+      base_img_tag: 7

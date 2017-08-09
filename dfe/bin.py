@@ -14,14 +14,12 @@ def main():
     args = parser.parse_args()
     configs = Configurations.from_file(args.configurations)
     if args.list_configurations:
-        for c in sorted(configs.configs_list):
+        for c in sorted(configs.configs_names):
             print(c)
     elif args.config_as_env_vars:
-        print(configs.config_as_env_vars(args.config_as_env_vars))
+        print(configs.get_expanded_config(args.config_as_env_vars).as_env_vars())
     elif args.render_with_config:
-        print(
-            Renderer(args.dockerfile, configs.expanded_configs[args.render_with_config]).render()
-        )
+        print(Renderer(configs.get_expanded_config(args.render_with_config)).render())
 
 if __name__ == '__main__':
     main()
