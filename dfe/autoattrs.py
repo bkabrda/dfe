@@ -16,16 +16,6 @@ def _add_if_not_present(func):
 
 
 @_add_if_not_present
-def auto_installer(attrs):
-    base_img_name = attrs['vars']['base_img_name']
-    if base_img_name == 'fedora':
-        return _add_var({'installer': 'dnf'})
-    elif base_img_name in ['rhel', 'centos']:
-        return _add_var({'installer': 'yum'})
-    return {}
-
-
-@_add_if_not_present
 def auto_dockerfile(attrs):
     return {'files': {'dockerfile': {'path': 'Dockerfile'}}}
 
@@ -39,10 +29,11 @@ def auto_tag(attrs):
 def auto_base_img_reg(attrs):
     return _add_var({'base_img_reg': ''})
 
+
 def auto_base_img_reg_slash(attrs):
     # If we have non-empty registry without ending slash, we append it
     if attrs['vars']['base_img_reg'] and attrs['vars']['base_img_reg'][-1] != '/':
         attrs['vars']['base_img_reg'] += '/'
 
 
-AUTOATTRS = [auto_installer, auto_dockerfile, auto_tag, auto_base_img_reg, auto_base_img_reg_slash]
+AUTOATTRS = [auto_dockerfile, auto_tag, auto_base_img_reg, auto_base_img_reg_slash]

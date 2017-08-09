@@ -10,6 +10,7 @@ defaults:
     # The configs for the service itself for rhel+centos vs fedora are very different,
     # therefore we provide different files
     configfile: config-rhel_centos
+    installer: yum
     distro_specific_help: |
       Some longer text for RHEL/CentOS goes here...
 
@@ -20,6 +21,7 @@ configurations:
       base_img_name: fedora
       base_img_tag: 26
       configfile: config-fedora
+      installer: dnf
       distro_specific_help: |
         These are Fedora-specific instructions
 

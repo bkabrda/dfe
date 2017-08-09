@@ -37,6 +37,7 @@ file used with the above `Dockerfile` might look like this:
         # The configs for the service itself for centos vs fedora are very different,
         # therefore we provide different files
         configfile: config-rhel_centos
+        installer: yum
     
     configurations:
       - name: fedora-26
@@ -46,6 +47,7 @@ file used with the above `Dockerfile` might look like this:
           base_img_name: fedora
           base_img_tag: 26
           configfile: config-fedora  # Override default config file
+          installer: dnf
 
       - name: centos-7
         tag: "centos/httpd:2.4"
@@ -67,8 +69,6 @@ When `dfe is executed, configurations will be expanded in the following way
 (if some values already exist, from a previous step, they're overwritten):
 
 * Some values are added automatically. Currently, these are:
-  * `vars.installer` - equals to `dnf` if `base_img_name` is `fedora`;
-    `yum` if `base_img_name` is `centos` or `rhel`
   * `files.dockerfile` - equals to `{path: Dockerfile}`
   * `tag` - equals to `name`
   * If `base_img_reg` is present and non-empty, slash is appended;
