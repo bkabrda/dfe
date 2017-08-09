@@ -40,6 +40,7 @@ file used with the above `Dockerfile` might look like this:
     
     configurations:
       - name: fedora-26
+        tag: "fedora/httpd:2.4"
         vars:
           base_img_reg: some.registry.fedoraproject.org
           base_img_name: fedora
@@ -47,6 +48,7 @@ file used with the above `Dockerfile` might look like this:
           configfile: config-fedora  # Override default config file
 
       - name: centos-7
+        tag: "centos/httpd:2.4"
         vars:
           base_img_reg: some.registry.centos.org
           base_img_name: centos
@@ -61,21 +63,24 @@ Things to note:
     and `vars.base_img_tag`
 * There are some `defaults` defined; there is a `files` section in the defaults
 
-When `dfe is executed, configurations will be expanded in the following way:
+When `dfe is executed, configurations will be expanded in the following way
+(if some values already exist, from a previous step, they're overwritten):
 
-* For each `configurations` entry, `defaults` is taken as the base
-* Value from the `configurations` entry are then taken and added
-  (these values can override the defaults)
 * Some values are added automatically. Currently, these are:
   * `vars.installer` - equals to `dnf` if `base_img_name` is `fedora`;
     `yum` if `base_img_name` is `centos` or `rhel`
-  * `files.dockerfile` - equals to `Dockerfile`
+  * `files.dockerfile` - equals to `{path: Dockerfile}`
+  * `tag` - equals to `name`
+* Values from `defaults` are added
+* Values from the `configurations` entry are added
+* `outpath` values are calculated for all `files` entries
 * `files` section is added to `vars` to be accessbile while rendering
 
 Taking the example above, these would be the expanded configurations
 (assuming output path given to `dfe` is `.`):
 
     - name: fedora-26
+      tag: "fedora/httpd:2.4"
       files:
         dockerfile:
           path: Dockerfile
@@ -91,6 +96,7 @@ Taking the example above, these would be the expanded configurations
         installer: dnf
 
     - name: centos-7
+      tag: "centos/httpd:2.4"
       files:
         dockerfile:
           path: Dockerfile
@@ -130,6 +136,11 @@ An example output follows (note that variable names are capitalized):
 
     BASE_IMG_REG=some.registry.fedoraproject.org INSTALLER=dnf CONFIGFILE=config-rhel_centos BASE_IMG_NAME=fedora BASE_IMG_TAG=26
 
+## Printing expanded values
+
+It's possible to print expanded values (or whole configs) to stdout
+via the `-v` switch.
+
 ## Usage
 
 * `dfe -h` - Print help
@@ -141,6 +152,10 @@ An example output follows (note that variable names are capitalized):
     given by `-o` (both default to '.')
   * Name of the resulting file is `Dockerfile.<name>` (for `configurations`
     entry with given `name`)
+* `dfe -c <configurations> -v <configuration_item> <configuration_value>` -
+   Output given value of given expanded configuration item to stdout (e.g.
+   `tag` to print the tag; to print whole item, use `.`).
+
 
 # Example
 

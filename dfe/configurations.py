@@ -55,16 +55,39 @@ class Configurations(object):
 
 
 class Config(object):
-    def __init__(self, name, files, vars):
-        self.name = name
-        self.files = files
-        self.vars = vars
+    def __init__(self, attrs):
+        self.attrs = attrs
+
+    @property
+    def name(self):
+        return self.attrs['name']
+
+    @property
+    def files(self):
+        return self.attrs['files']
+
+    @property
+    def tag(self):
+        return self.attrs['tag']
+
+    @property
+    def vars(self):
+        return self.attrs['vars']
 
     def as_env_vars(self):
         res = []
-        for k, v in self.vars.items():
+        for k, v in self.attrs['vars'].items():
             res.append('{k}={v}'.format(k=k.upper(), v=v))
         return ' '.join(res)
+
+    def get_value(self, attr):
+        if attr == '.':
+            return self.attrs
+        alist = attr.split('.')
+        ret = self.attrs
+        for a in alist:
+            ret = ret[a]
+        return ret
 
     @classmethod
     def from_raw_dict(cls, raw_config, defaults, output_path):
@@ -85,4 +108,4 @@ class Config(object):
             )
         # TODO: make "files" a prohibited name in "vars" because of this
         attrs['vars']['files'] = attrs['files']
-        return cls(attrs['name'], attrs.get('files', []), attrs['vars'])
+        return cls(attrs)

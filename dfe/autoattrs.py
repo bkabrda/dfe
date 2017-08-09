@@ -30,4 +30,9 @@ def auto_dockerfile(attrs):
     return {'files': {'dockerfile': {'path': 'Dockerfile'}}}
 
 
-AUTOATTRS = [auto_installer, auto_dockerfile]
+@_add_if_not_present
+def auto_tag(attrs):
+    return {'tag': attrs['name']}
+
+
+AUTOATTRS = [auto_installer, auto_dockerfile, auto_tag]
