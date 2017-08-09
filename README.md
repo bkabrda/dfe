@@ -102,10 +102,9 @@ to have information such as `base_img_name` available in the test suite.
 
 `dfe` allows doing this via the `-e` switch(see below). This will print
 all the values from an expanded `vars` section of given `configurations` item.
-An example output follows:
+An example output follows (note that variable names are capitalized):
 
     BASE_IMG_REG=some.registry.fedoraproject.org INSTALLER=dnf CONFIGFILE=config-rhel_centos BASE_IMG_NAME=fedora BASE_IMG_TAG=26
-
 
 ## Usage
 
@@ -115,3 +114,10 @@ An example output follows:
   env vars to stdout
 * `dfe -c <configurations> -r <configuration_item>` - Output rendered
   Dockerfile to stdout
+
+# Example
+
+To run `dfe` from git source on the example in `example` directory, you need
+to change dir there and run:
+
+    PYTHONPATH=.. python ../dfe/bin.py -c configurations.yml <your_command>
