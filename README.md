@@ -74,7 +74,8 @@ When `dfe is executed, configurations will be expanded in the following way
 * Values from `defaults` are added
 * Values from the `configurations` entry are added
 * `outpath` values are calculated for all `files` entries
-* `files` section is added to `vars` to be accessbile while rendering
+* `name`, `tag` and `files` are added to `vars` to be accessbile
+  while rendering
 
 Taking the example above, these would be the expanded configurations
 (assuming output path given to `dfe` is `.`):

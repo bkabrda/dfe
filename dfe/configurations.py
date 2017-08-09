@@ -106,6 +106,8 @@ class Config(object):
                 output_path,
                 '{orig}.{cname}'.format(orig=v['path'], cname=attrs['name'])
             )
-        # TODO: make "files" a prohibited name in "vars" because of this
+        # TODO: make "name", "tag" "files" a prohibited name in "vars" because of this
         attrs['vars']['files'] = attrs['files']
+        attrs['vars']['name'] = attrs['name']
+        attrs['vars']['tag'] = attrs['tag']
         return cls(attrs)
