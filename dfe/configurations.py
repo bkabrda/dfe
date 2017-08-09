@@ -1,4 +1,5 @@
 import copy
+import os
 
 import yaml
 
@@ -7,10 +8,11 @@ from dfe.util import merge_dicts_recursive
 
 
 class Configurations(object):
-    def __init__(self, version, defaults, raw_configs):
+    def __init__(self, version, defaults, raw_configs, output_path):
         self._version = version
         self._defaults = defaults
         self._raw_configs = raw_configs
+        self._output_path = output_path
         self._expanded_configs = None
 
     @property
@@ -30,7 +32,9 @@ class Configurations(object):
         if self._expanded_configs is None:
             self._expanded_configs = []
             for cfg in self.raw_configs:
-                self._expanded_configs.append(Config.from_raw_dict(cfg, self._defaults))
+                self._expanded_configs.append(
+                    Config.from_raw_dict(cfg, self._defaults, self._output_path)
+                )
         return self._expanded_configs
 
     @property
@@ -41,18 +45,19 @@ class Configurations(object):
         return next(c for c in self.expanded_configs if c.name == config)
 
     @classmethod
-    def from_file(cls, path):
+    def from_file(cls, path, output_path):
+        # we need to know output_path, so that we can use it in expanded configs
         c = {}
         with open(path) as f:
             c = yaml.load(f)
         # TODO: report proper parsing errors
-        return cls(c['version'], c['defaults'], c['configurations'])
+        return cls(c['version'], c['defaults'], c['configurations'], output_path)
 
 
 class Config(object):
-    def __init__(self, name, dockerfile, vars):
+    def __init__(self, name, files, vars):
         self.name = name
-        self.dockerfile = dockerfile
+        self.files = files
         self.vars = vars
 
     def as_env_vars(self):
@@ -62,12 +67,22 @@ class Config(object):
         return ' '.join(res)
 
     @classmethod
-    def from_raw_dict(cls, raw_config, defaults):
+    def from_raw_dict(cls, raw_config, defaults, output_path):
         # firstly, get a copy of defaults
         attrs = copy.deepcopy(defaults)
-        # secondly, override them by explicitly provided values from raw_config
-        merge_dicts_recursive(attrs, raw_config)
-        # thirdly, use AUTOATTRS
-        for f in AUTOATTRS:
-            f(attrs)
-        return cls(attrs['name'], attrs['dockerfile'], attrs['vars'])
+        # secondly, add values from raw_config (overwriting)
+        merge_dicts_recursive(attrs, raw_config, overwrite=True)
+        attrs.setdefault('files', {})
+        # thirdly, use AUTOATTRS (not overwriting)
+        for func in AUTOATTRS:
+            func(attrs)
+
+        # expand output filenames
+        for f, v in attrs['files'].items():
+            v['outpath'] = os.path.join(
+                output_path,
+                '{orig}.{cname}'.format(orig=v['path'], cname=attrs['name'])
+            )
+        # TODO: make "files" a prohibited name in "vars" because of this
+        attrs['vars']['files'] = attrs['files']
+        return cls(attrs['name'], attrs.get('files', []), attrs['vars'])

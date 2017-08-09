@@ -24,8 +24,10 @@ def auto_installer(attrs):
         return _add_var({'installer': 'yum'})
     return {}
 
+
 @_add_if_not_present
 def auto_dockerfile(attrs):
-    return {'dockerfile': 'Dockerfile'}
+    return {'files': {'dockerfile': {'path': 'Dockerfile'}}}
+
 
 AUTOATTRS = [auto_installer, auto_dockerfile]

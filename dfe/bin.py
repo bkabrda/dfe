@@ -13,7 +13,7 @@ def main():
     parser.add_argument('-i', '--input-dir', default='.')
     parser.add_argument('-o', '--output-dir', default='.')
     args = parser.parse_args()
-    configs = Configurations.from_file(args.configurations)
+    configs = Configurations.from_file(args.configurations, args.output_dir)
     if args.list_configurations:
         for c in sorted(configs.configs_names):
             print(c)
@@ -23,7 +23,6 @@ def main():
         renderer = Renderer(
             configs.get_expanded_config(args.render_with_config),
             input_dir = args.input_dir,
-            output_dir = args.output_dir
         )
         renderer.render()
 

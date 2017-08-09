@@ -4,6 +4,7 @@ RUN {{ installer }} install httpd && \
     {{ installer }} clean all
 
 COPY {{ configfile }} /etc/httpd/conf.d
+COPY {{ files['helpmd']['outpath'] }} /usr/share/docs/{{ files['helpmd']['path'] }}
 
 EXPOSE 80
 

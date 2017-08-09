@@ -14,6 +14,7 @@ A `Dockerfile` written for usage by `dfe` might look like this:
         {{ installer }} clean all
     
     COPY {{ configfile }} /etc/httpd/conf.d
+    COPY {{ files['helpmd']['outpath'] }} /usr/share/docs/{{ files['helpmd']['path'] }}
     
     EXPOSE 80
     
@@ -27,7 +28,14 @@ file used with the above `Dockerfile` might look like this:
     version: '1'
     
     defaults:
+      files:
+        # The help.md file is very similar for all combinations, so we provide just
+        # one, which will also be rendered
+        helpmd:
+          path: help.md
       vars:
+        # The configs for the service itself for centos vs fedora are very different,
+        # therefore we provide different files
         configfile: config-rhel_centos
     
     configurations:
@@ -36,7 +44,7 @@ file used with the above `Dockerfile` might look like this:
           base_img_reg: some.registry.fedoraproject.org
           base_img_name: fedora
           base_img_tag: 26
-          configfile: config-fedora
+          configfile: config-fedora  # Override default config file
 
       - name: centos-7
         vars:
@@ -51,7 +59,7 @@ Things to note:
 * There are 3 `configurations` defined, each has a `name` and `vars`.
   * Required values are `name`, `vars.base_img_reg`, `vars.base_img_name`
     and `vars.base_img_tag`
-* There are some `defaults` defined
+* There are some `defaults` defined; there is a `files` section in the defaults
 
 When `dfe is executed, configurations will be expanded in the following way:
 
@@ -61,12 +69,20 @@ When `dfe is executed, configurations will be expanded in the following way:
 * Some values are added automatically. Currently, these are:
   * `vars.installer` - equals to `dnf` if `base_img_name` is `fedora`;
     `yum` if `base_img_name` is `centos` or `rhel`
-  * `dockerfile` - equals to `Dockerfile`
+  * `files.dockerfile` - equals to `Dockerfile`
+* `files` section is added to `vars` to be accessbile while rendering
 
-Taking the example above, these would be the expanded configurations:
+Taking the example above, these would be the expanded configurations
+(assuming output path given to `dfe` is `.`):
 
     - name: fedora-26
-      dockerfile: Dockerfile
+      files:
+        dockerfile:
+          path: Dockerfile
+          outpath: Dockerfile.fedora-26
+        helpmd:
+          path: help.md
+          outpath: help.md.fedora-26
       vars:
         base_img_reg: some.registry.fedoraproject.org
         base_img_name: fedora
@@ -75,7 +91,13 @@ Taking the example above, these would be the expanded configurations:
         installer: dnf
 
     - name: centos-7
-      dockerfile: Dockerfile
+      files:
+        dockerfile:
+          path: Dockerfile
+          outpath: Dockerfile.centos-7
+        helpmd:
+          path: help.md
+          outpath: help.md.centos-7
       vars:
         base_img_reg: some.registry.centos.org
         base_img_name: centos
@@ -83,14 +105,16 @@ Taking the example above, these would be the expanded configurations:
         configfile: config-rhel_centos
         installer: yum
 
-## Dockerfile Expansion
+(Plus, the `files` section would also be appended under `vars`, but that is
+omitted in this example.)
+
+## Expansion (a.k.a. Rendering)
 
 `Dockerfile` rendering by `dfe` for specific `configurations` entry:
 
 * The `configurations` entry is expanded (see above)
-* The `dockerfile` attribute is taken from given entry and used as a template
-  (current directory is used as a base to search for this file)
-* The template is rendered using values from entry's `vars`
+* All files from the `files` item of given entry are traversed and rendered
+* All templates are rendered using values from entry's expanded `vars`
 
 ## Config as Environment Variables
 
@@ -123,5 +147,3 @@ An example output follows (note that variable names are capitalized):
 To run `dfe` from git source on the example in `example` directory, run:
 
     PYTHONPATH=.. python ../dfe/bin.py -c configurations.yml -i example/ -o example/ <your_command>
-
-(`-i` and `-o` are only necessary if you're rendering Dockerfile via `dfe -r`)

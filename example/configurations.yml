@@ -1,8 +1,17 @@
 version: '1'
 
 defaults:
+  files:
+    # The help.md file is very similar for all combinations, so we provide just
+    # one, but we want it rendered
+    helpmd:
+      path: help.md
   vars:
+    # The configs for the service itself for rhel+centos vs fedora are very different,
+    # therefore we provide different files
     configfile: config-rhel_centos
+    distro_specific_help: |
+      Some longer text for RHEL/CentOS goes here...
 
 configurations:
   - name: fedora-26
@@ -11,6 +20,8 @@ configurations:
       base_img_name: fedora
       base_img_tag: 26
       configfile: config-fedora
+      distro_specific_help: |
+        These are Fedora-specific instructions
 
   - name: some-special-rhel-7-name
     vars:
