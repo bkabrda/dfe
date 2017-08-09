@@ -8,7 +8,7 @@ multiple configurations to render it in.
 
 A `Dockerfile` written for usage by `dfe` might look like this:
 
-    FROM {{ base_img_reg }}/{{ base_img_name }}:{{ base_img_tag }}
+    FROM {{ base_img_reg }}{{ base_img_name }}:{{ base_img_tag }}
     
     RUN {{ installer }} install httpd && \
         {{ installer }} clean all
@@ -71,6 +71,8 @@ When `dfe is executed, configurations will be expanded in the following way
     `yum` if `base_img_name` is `centos` or `rhel`
   * `files.dockerfile` - equals to `{path: Dockerfile}`
   * `tag` - equals to `name`
+  * If `base_img_reg` is present and non-empty, slash is appended;
+    if `base_img_reg` is not present, it's added (empty)
 * Values from `defaults` are added
 * Values from the `configurations` entry are added
 * `outpath` values are calculated for all `files` entries

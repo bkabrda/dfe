@@ -35,4 +35,14 @@ def auto_tag(attrs):
     return {'tag': attrs['name']}
 
 
-AUTOATTRS = [auto_installer, auto_dockerfile, auto_tag]
+@_add_if_not_present
+def auto_base_img_reg(attrs):
+    return _add_var({'base_img_reg': ''})
+
+def auto_base_img_reg_slash(attrs):
+    # If we have non-empty registry without ending slash, we append it
+    if attrs['vars']['base_img_reg'] and attrs['vars']['base_img_reg'][-1] != '/':
+        attrs['vars']['base_img_reg'] += '/'
+
+
+AUTOATTRS = [auto_installer, auto_dockerfile, auto_tag, auto_base_img_reg, auto_base_img_reg_slash]
