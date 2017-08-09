@@ -1,7 +1,6 @@
 version: '1'
 
 defaults:
-  dockerfile: Dockerfile
   vars:
     configfile: config-rhel_centos
 
