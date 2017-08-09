@@ -112,12 +112,16 @@ An example output follows (note that variable names are capitalized):
 * `dfe -c <configurations> -l` - List names of configurations entries
 * `dfe -c <configurations> -e <configuration_item>` - Output given item as
   env vars to stdout
-* `dfe -c <configurations> -r <configuration_item>` - Output rendered
-  Dockerfile to stdout
+* `dfe -c <configurations> -r <configuration_item> -i <dir> -o <dir>`
+  * Renders `Dockerfile`, from directory given by `-i` to directory
+    given by `-o` (both default to '.')
+  * Name of the resulting file is `Dockerfile.<name>` (for `configurations`
+    entry with given `name`)
 
 # Example
 
-To run `dfe` from git source on the example in `example` directory, you need
-to change dir there and run:
+To run `dfe` from git source on the example in `example` directory, run:
 
-    PYTHONPATH=.. python ../dfe/bin.py -c configurations.yml <your_command>
+    PYTHONPATH=.. python ../dfe/bin.py -c configurations.yml -i example/ -o example/ <your_command>
+
+(`-i` and `-o` are only necessary if you're rendering Dockerfile via `dfe -r`)
