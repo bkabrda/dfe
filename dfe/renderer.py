@@ -4,7 +4,10 @@ import jinja2
 class Renderer(object):
     def __init__(self, cfg):
         self.cfg = cfg
-        self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
+        self.jinja_env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader('.'),
+            undefined=jinja2.StrictUndefined
+        )
 
     def render(self):
         tpl = self.jinja_env.get_template(self.cfg.dockerfile)
