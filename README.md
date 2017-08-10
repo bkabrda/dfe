@@ -139,9 +139,10 @@ via the `-v` switch.
     given by `-o`
   * Name of the resulting files is `<original_filename>.<name>` (for `configurations`
     entry with given `name`)
-* `dfe -c <configurations> expanded-value <configuration_item> <configuration_value>` -
+* `dfe -c <configurations> config-value <configuration_item> <configuration_value>` -
    Output given value of given expanded configuration item to stdout (e.g.
-   `tag` to print the tag; to print whole item, use `.`).
+   `tag` to print the tag, `vars.base_img_name` to print name of the base image;
+    to print whole item, use `.`).
 
 Default values:
 * `-c`: `./configurations.yml`
