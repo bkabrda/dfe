@@ -21,15 +21,12 @@ class DFEValueException(DFEException):
         return 'Error: value {v} not found in {w}'.format(v=self.value, w=self.where)
 
 
-class DFEConfigurationsVersionException(DFEException):
-    def __init__(self, version):
-        self.version = version
+class DFEValidationException(DFEException):
+    def __init__(self, err):
+        self.err = err
 
     def __str__(self):
-        if self.version is None:
-            return 'Error: configurations file provides no version'
-        return 'Error: configuations file version "{v}" is not understood by this dfe version'.\
-            format(v=self.version)
+        return 'Configurations validation error: {e}'.format(e=self.err)
 
 
 class DFETemplateNotFoundException(DFEException):
