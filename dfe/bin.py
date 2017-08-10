@@ -10,8 +10,6 @@ def main():
     parser.add_argument('-o', '--output-dir', default='.')
     subp = parser.add_subparsers(dest='subparser')
     subp.add_parser('list-configs')
-    env = subp.add_parser('config-as-env')
-    env.add_argument('config')
     val = subp.add_parser('expanded-value')
     val.add_argument('config')
     val.add_argument('value')
@@ -22,8 +20,6 @@ def main():
     if args.subparser == 'list-configs':
         for c in sorted(configs.configs_names):
             print(c)
-    elif args.subparser == 'config-as-env':
-        print(configs.get_expanded_config(args.config).as_env_vars())
     elif args.subparser == 'expanded-value':
         # TODO: nice formatting
         print(

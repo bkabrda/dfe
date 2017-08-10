@@ -125,20 +125,6 @@ omitted in this example.)
 * All files from the `files` item of given entry are traversed and rendered
 * All templates are rendered using values from entry's expanded `vars`
 
-## Config as Environment Variables
-
-In some cases, it might be useful to be able to print values from an expanded
-`configurations` entry as shell environment variables. For example,
-when running tests via
-[MTF](https://github.com/fedora-modularity/meta-test-family/), you might want
-to have information such as `base_img_name` available in the test suite.
-
-`dfe` allows doing this via the `-e` switch(see below). This will print
-all the values from an expanded `vars` section of given `configurations` item.
-An example output follows (note that variable names are capitalized):
-
-    BASE_IMG_REG=some.registry.fedoraproject.org INSTALLER=dnf CONFIGFILE=config-rhel_centos BASE_IMG_NAME=fedora BASE_IMG_TAG=26
-
 ## Printing expanded values
 
 It's possible to print expanded values (or whole configs) to stdout
@@ -148,8 +134,6 @@ via the `-v` switch.
 
 * `dfe -h` - Print help
 * `dfe [-c <configurations>] list-configs` - List names of configurations entries
-* `dfe -c <configurations> config-as-env <configuration_item>` - Output given item as
-  env vars to stdout
 * `dfe [-c <configurations>] [-i <dir>] [-o <dir>] render <configuration_item>`
   * Renders `Dockerfile`, from directory given by `-i` to directory
     given by `-o`

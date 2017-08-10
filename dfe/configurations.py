@@ -74,12 +74,6 @@ class Config(object):
     def vars(self):
         return self.attrs['vars']
 
-    def as_env_vars(self):
-        res = []
-        for k, v in self.attrs['vars'].items():
-            res.append('{k}={v}'.format(k=k.upper(), v=v))
-        return ' '.join(res)
-
     def get_value(self, attr):
         if attr == '.':
             return self.attrs
