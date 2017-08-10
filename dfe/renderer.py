@@ -1,5 +1,7 @@
 import jinja2
 
+from dfe.exceptions import DFETemplateNotFoundException
+
 
 class Renderer(object):
     def __init__(self, cfg, input_dir):
@@ -11,7 +13,10 @@ class Renderer(object):
         )
 
     def render_file(self, f):
-        tpl = self.jinja_env.get_template(f)
+        try:
+            tpl = self.jinja_env.get_template(f)
+        except jinja2.exceptions.TemplateNotFound:
+            raise DFETemplateNotFoundException(f, self.input_dir)
         return tpl.render(**self.cfg.vars)
 
     def render(self):

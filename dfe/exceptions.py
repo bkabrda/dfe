@@ -30,3 +30,12 @@ class DFEConfigurationsVersionException(DFEException):
             return 'Error: configurations file provides no version'
         return 'Error: configuations file version "{v}" is not understood by this dfe version'.\
             format(v=self.version)
+
+
+class DFETemplateNotFoundException(DFEException):
+    def __init__(self, template, where):
+        self.template = template
+        self.where = where
+
+    def __str__(self):
+        return 'Error: template "{t}" not found in "{w}"'.format(t=self.template, w=self.where)
