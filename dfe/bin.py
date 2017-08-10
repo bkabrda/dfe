@@ -1,4 +1,5 @@
 import argparse
+import json
 import sys
 
 from dfe.configurations import Configurations
@@ -56,8 +57,9 @@ def main():
             for c in sorted(configs.configs_names):
                 print(c)
         elif args.subparser == 'config-value':
-            # TODO: nice formatting
-            print(configs.get_expanded_config(args.config).get_value(args.value))
+            value = configs.get_expanded_config(args.config).get_value(args.value)
+            value_e = json.dumps(value, indent=2)
+            print(value_e)
         elif args.subparser == 'render':
             renderer = Renderer(
                 configs.get_expanded_config(args.config),
