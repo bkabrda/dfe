@@ -4,7 +4,11 @@ import os
 import yaml
 
 from dfe.autoattrs import AUTOATTRS
-from dfe.exceptions import DFEParseException, DFEConfigurationsVersionException
+from dfe.exceptions import (
+    DFEParseException,
+    DFEConfigurationsVersionException,
+    DFEValueException
+)
 from dfe.util import merge_dicts_recursive
 
 
@@ -93,6 +97,8 @@ class Config(object):
         alist = attr.split('.')
         ret = self.attrs
         for a in alist:
+            if a not in ret:
+                raise DFEValueException(attr, self.name)
             ret = ret[a]
         return ret
 

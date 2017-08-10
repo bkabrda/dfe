@@ -12,6 +12,15 @@ class DFEParseException(DFEException):
     pass
 
 
+class DFEValueException(DFEException):
+    def __init__(self, value, where):
+        self.value = value
+        self.where = where
+
+    def __str__(self):
+        return 'Error: value {v} not found in {w}'.format(v=self.value, w=self.where)
+
+
 class DFEConfigurationsVersionException(DFEException):
     def __init__(self, version):
         self.version = version
