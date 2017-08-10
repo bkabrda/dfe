@@ -10,7 +10,9 @@ def main():
     parser.add_argument('-o', '--output-dir', default='.')
     subp = parser.add_subparsers(dest='subparser')
     subp.add_parser('list-configs')
-    val = subp.add_parser('config-value')
+    val = subp.add_parser('config-value',
+                          help='Print given value from given config item, e.g. '
+                          '`fedora-26 vars.base_img_name` or `fedora-26 tag`')
     val.add_argument('config')
     val.add_argument('value')
     rend = subp.add_parser('render')
