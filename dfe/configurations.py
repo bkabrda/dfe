@@ -4,6 +4,7 @@ import os
 import yaml
 
 from dfe.autoattrs import AUTOATTRS
+from dfe.exceptions import DFEParseException, DFEConfigurationsVersionException
 from dfe.util import merge_dicts_recursive
 
 
@@ -48,10 +49,22 @@ class Configurations(object):
     def from_file(cls, path, output_path):
         # we need to know output_path, so that we can use it in expanded configs
         c = {}
-        with open(path) as f:
-            c = yaml.load(f)
-        # TODO: report proper parsing errors
-        return cls(c['version'], c['defaults'], c['configurations'], output_path)
+        try:
+            with open(path) as f:
+                c = yaml.load(f)
+        except (yaml.scanner.ScannerError, IOError) as e:
+            raise DFEParseException(e)
+
+        if 'version' not in c:
+            raise DFEConfigurationsVersionException(None)
+        version = str(c.get('version'))
+        if version != '1':
+            raise DFEConfigurationsVersionException(version)
+
+        defaults = c.get('defaults', {})
+        configurations = c.get('configurations', {})
+
+        return cls(version, defaults, configurations, output_path)
 
 
 class Config(object):

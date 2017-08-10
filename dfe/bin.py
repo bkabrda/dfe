@@ -1,6 +1,8 @@
 import argparse
+import sys
 
 from dfe.configurations import Configurations
+from dfe.exceptions import DFEException
 from dfe.renderer import Renderer
 
 def main():
@@ -47,24 +49,24 @@ def main():
         'config',
         help='Config item to render files for'
     )
-    args = parser.parse_args()
-    configs = Configurations.from_file(args.configurations, args.output_dir)
-    if args.subparser == 'list-configs':
-        for c in sorted(configs.configs_names):
-            print(c)
-    elif args.subparser == 'config-value':
-        # TODO: nice formatting
-        print(
-            configs.\
-            get_expanded_config(args.config).\
-            get_value(args.value)
-        )
-    elif args.subparser == 'render':
-        renderer = Renderer(
-            configs.get_expanded_config(args.config),
-            input_dir = args.input_dir,
-        )
-        renderer.render()
+    try:
+        args = parser.parse_args()
+        configs = Configurations.from_file(args.configurations, args.output_dir)
+        if args.subparser == 'list-configs':
+            for c in sorted(configs.configs_names):
+                print(c)
+        elif args.subparser == 'config-value':
+            # TODO: nice formatting
+            print(configs.get_expanded_config(args.config).get_value(args.value))
+        elif args.subparser == 'render':
+            renderer = Renderer(
+                configs.get_expanded_config(args.config),
+                input_dir = args.input_dir,
+            )
+            renderer.render()
+    except DFEException as e:
+        sys.stderr.write(str(e) + '\n')
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
