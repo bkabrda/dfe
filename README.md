@@ -68,7 +68,9 @@ Things to note:
 When `dfe is executed, configurations will be expanded in the following way
 (if some values already exist, from a previous step, they're overwritten):
 
-* Some values are added automatically. Currently, these are:
+* Some values are added automatically. Note that these can always be overriden
+  by specifying different values in `defaults` or `configurations`.
+  Currently, the default values are:
   * `files.dockerfile` - equals to `{path: Dockerfile}`
   * `tag` - equals to `name`
   * If `base_img_reg` is present and non-empty, slash is appended;
